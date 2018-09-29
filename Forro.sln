@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forro.Admin", "Forro.Admin\Forro.Admin.csproj", "{51025E4F-EF6F-4CB5-82F9-EB5EF2655CA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forro.Admin", "Forro.Admin\Forro.Admin.csproj", "{51025E4F-EF6F-4CB5-82F9-EB5EF2655CA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forro.Data", "Forro.Data\Forro.Data.csproj", "{66AABE63-4377-45BC-8EC7-699D5D9C7BC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forro.Domain", "Forro.Domain\Forro.Domain.csproj", "{F856EDFF-D28A-4AFA-A9BF-32C5B100B158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{51025E4F-EF6F-4CB5-82F9-EB5EF2655CA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51025E4F-EF6F-4CB5-82F9-EB5EF2655CA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51025E4F-EF6F-4CB5-82F9-EB5EF2655CA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66AABE63-4377-45BC-8EC7-699D5D9C7BC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66AABE63-4377-45BC-8EC7-699D5D9C7BC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66AABE63-4377-45BC-8EC7-699D5D9C7BC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66AABE63-4377-45BC-8EC7-699D5D9C7BC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F856EDFF-D28A-4AFA-A9BF-32C5B100B158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F856EDFF-D28A-4AFA-A9BF-32C5B100B158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F856EDFF-D28A-4AFA-A9BF-32C5B100B158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F856EDFF-D28A-4AFA-A9BF-32C5B100B158}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,18 @@
+<h1>Forró Level</h1>
+
+<p>These levels are used for filtering dancing moves</p>
+
+<p *ngIf="!forroLevels"><em>Loading...</em></p>
+
+<table class='table' *ngIf="forroLevels">
+  <thead>
+    <tr>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let forroLevel of forroLevels">
+      <td>{{ forroLevel.name }}</td>
+    </tr>
+  </tbody>
+</table>
