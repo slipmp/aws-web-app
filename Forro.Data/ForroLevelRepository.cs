@@ -17,20 +17,21 @@ namespace Forro.Data
     public class ForroLevelRepository : IForroLevelRepository
     {
         private const string ForroLevelTableName = "ForroLevel";
+        private readonly IAmazonDynamoDB _client;
+
+        public ForroLevelRepository(IAmazonDynamoDB client)
+        {
+            _client = client;
+        }
 
         public IList<ForroLevel> GetAll()
         {
-            var config = new AmazonDynamoDBConfig();
-            config.RegionEndpoint = RegionEndpoint.USEast2;
-
-            var client = new AmazonDynamoDBClient(config);
-
             var request = new ScanRequest()
             {
-                TableName=ForroLevelTableName
+                TableName = ForroLevelTableName
             };
 
-            var queryResult = client.ScanAsync(request).Result;
+            var queryResult = _client.ScanAsync(request).Result;
 
             var resultList = queryResult.Items.Select(MapForroLevel).ToList();
 

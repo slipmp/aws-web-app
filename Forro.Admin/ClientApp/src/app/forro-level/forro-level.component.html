@@ -4,15 +4,30 @@
 
 <p *ngIf="!forroLevels"><em>Loading...</em></p>
 
-<table class='table' *ngIf="forroLevels">
-  <thead>
-    <tr>
-      <th>Name</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let forroLevel of forroLevels">
-      <td>{{ forroLevel.name }}</td>
-    </tr>
-  </tbody>
-</table>
+<div  *ngIf="forroLevels">
+  <button type="button" class="btn btn-primary" (click)='addingNew=true'>Add New</button>
+
+  <table class='table'>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let forroLevel of forroLevels">
+        <td>{{ forroLevel.forroLevelId }}</td>
+        <td>{{ forroLevel.name }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="addingNew">
+  <label for="txtId">Id</label>
+  <input type="number" class="form-control" id="txtId">
+
+  <label for="txtLevel">Level</label>
+  <input type="text" class="form-control" id="txtLevel" placeholder="Enter email">
+  <br />
+  <button type="button" class="btn btn-dark" (click)='insert()'>Add New</button>
+</div>

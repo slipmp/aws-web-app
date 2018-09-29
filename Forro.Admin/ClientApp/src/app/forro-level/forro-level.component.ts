@@ -8,8 +8,9 @@ import { HttpClient } from '@angular/common/http';
 
 export class ForroLevelComponent {
   public forroLevels: ForroLevel[];
+  public addingNew = false;
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl:string) {
+  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     //this.forroLevels = new Array<ForroLevel>();
     //this.forroLevels[0] = { name: 'test' }
 
@@ -19,8 +20,13 @@ export class ForroLevelComponent {
         this.forroLevels = result;
       }, error => console.error(error));
   }
+
+  insert() {
+
+  }
 }
 
 interface ForroLevel {
+  forroLevelId: number;
   name: string;
 }
