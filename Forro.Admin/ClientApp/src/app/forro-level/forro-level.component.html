@@ -23,11 +23,29 @@
   </table>
 </div>
 <div *ngIf="addingNew">
-  <label for="txtId">Id</label>
-  <input type="number" class="form-control" id="txtId">
+  <form (ngSubmit)="insert()" #forroForm="ngForm">
 
-  <label for="txtLevel">Level</label>
-  <input type="text" class="form-control" id="txtLevel" placeholder="Enter email">
-  <br />
-  <button type="button" class="btn btn-dark" (click)='insert()'>Add New</button>
+    <label for="txtId">Id</label>
+    <input type="number" class="form-control" id="txtId" name="txtId" required min="1" max="10"
+           [(ngModel)]="forroLevelModel.forroLevelId">
+    <div *ngIf="forroLevelIdInvalid" class="alert alert-danger">
+      Forró Level is required and it must be between 1 and 10
+    </div>
+
+    <label for="txtLevel">Level</label>
+    <input type="text" class="form-control" id="txtLevel" name="txtLevel" placeholder="Enter level name"
+           required
+           [(ngModel)]="forroLevelModel.name" minlength="4" #name="ngModel">
+
+    <div *ngIf="name.invalid && (name.dirty || name.touched)">
+      <div *ngIf="name.errors.required" class="alert alert-danger">
+        Name is required
+      </div>
+      <div *ngIf="name.errors.minlength" class="alert alert-danger">
+        Level name must be at least 4 characters long
+      </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary" [disabled]="!forroForm.form.valid">Add New</button>
+  </form>
 </div>

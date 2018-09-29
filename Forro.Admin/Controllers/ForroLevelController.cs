@@ -15,17 +15,22 @@ namespace Forro.Admin.Controllers
     [ApiController]
     public class ForroLevelController : ControllerBase
     {
-        // GET: api/ForroLevel
-        [HttpGet]
-        public IEnumerable<ForroLevel> Get()
+        private readonly ForroLevelRepository _forroLevelRepository;
+
+        public ForroLevelController()
         {
             var config = new AmazonDynamoDBConfig();
             config.RegionEndpoint = RegionEndpoint.USEast2;
             var client = new AmazonDynamoDBClient(config);
 
-            var forroRepository = new ForroLevelRepository(client);
+            _forroLevelRepository = new ForroLevelRepository(client);
+        }
 
-            var result = forroRepository.GetAll();
+        // GET: api/ForroLevel
+        [HttpGet]
+        public IEnumerable<ForroLevel> Get()
+        {
+            var result = _forroLevelRepository.GetAll();
 
             return result;
         }
@@ -39,8 +44,9 @@ namespace Forro.Admin.Controllers
 
         // POST: api/ForroLevel
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] ForroLevel value)
         {
+            
         }
 
         // PUT: api/ForroLevel/5
