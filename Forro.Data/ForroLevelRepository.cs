@@ -1,5 +1,11 @@
-﻿using Forro.Domain;
+﻿using Amazon;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DocumentModel;
+using Amazon.DynamoDBv2.Model;
+using Forro.Domain;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Forro.Data
 {
@@ -10,15 +16,34 @@ namespace Forro.Data
 
     public class ForroLevelRepository : IForroLevelRepository
     {
+        private const string ForroLevelTableName = "ForroLevel";
+
         public IList<ForroLevel> GetAll()
         {
-            var result = new List<ForroLevel>
+            var config = new AmazonDynamoDBConfig();
+            config.RegionEndpoint = RegionEndpoint.USEast2;
+
+            var client = new AmazonDynamoDBClient(config);
+
+            var request = new ScanRequest()
             {
-                new ForroLevel{ Name="Beginner"},
-                new ForroLevel{ Name="Intermediate"}
+                TableName=ForroLevelTableName
             };
 
-            return result;
+            var queryResult = client.ScanAsync(request).Result;
+
+            var resultList = queryResult.Items.Select(MapForroLevel).ToList();
+
+            return resultList;
+        }
+
+        private ForroLevel MapForroLevel(Dictionary<string, AttributeValue> result)
+        {
+            return new ForroLevel
+            {
+                ForroLevelId = Convert.ToInt32(result["ForroLevelId"].N),
+                Name = result["Name"].S
+            };
         }
     }
 }

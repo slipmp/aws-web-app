@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.14.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Forro.Domain\Forro.Domain.csproj" />
   </ItemGroup>
 
