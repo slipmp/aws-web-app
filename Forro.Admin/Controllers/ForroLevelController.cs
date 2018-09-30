@@ -6,6 +6,7 @@ using Amazon;
 using Amazon.DynamoDBv2;
 using Forro.Data;
 using Forro.Domain;
+using Forro.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace Forro.Admin.Controllers
     [ApiController]
     public class ForroLevelController : ControllerBase
     {
-        private readonly ForroLevelRepository _forroLevelRepository;
+        private readonly ForroLevelService _forroLevelService;
 
         public ForroLevelController()
         {
@@ -23,14 +24,15 @@ namespace Forro.Admin.Controllers
             config.RegionEndpoint = RegionEndpoint.USEast2;
             var client = new AmazonDynamoDBClient(config);
 
-            _forroLevelRepository = new ForroLevelRepository(client);
+            var forroLevelRepository = new ForroLevelRepository(client);
+            _forroLevelService = new ForroLevelService(forroLevelRepository);
         }
 
         // GET: api/ForroLevel
         [HttpGet]
         public IEnumerable<ForroLevel> Get()
         {
-            var result = _forroLevelRepository.GetAll();
+            var result = _forroLevelService.GetAll();
 
             return result.OrderBy(x => x.ForroLevelId);
         }
@@ -46,7 +48,7 @@ namespace Forro.Admin.Controllers
         [HttpPost]
         public void Post([FromBody] ForroLevel value)
         {
-            _forroLevelRepository.Insert(value);
+            _forroLevelService.Insert(value);
         }
 
         // PUT: api/ForroLevel/5
@@ -59,7 +61,7 @@ namespace Forro.Admin.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            _forroLevelRepository.Delete(id);
+            _forroLevelService.Delete(id);
         }
     }
 }

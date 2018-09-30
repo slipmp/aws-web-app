@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Forro.Data\Forro.Data.csproj" />
+    <ProjectReference Include="..\Forro.Domain\Forro.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

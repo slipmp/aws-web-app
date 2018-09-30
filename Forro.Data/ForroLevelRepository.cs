@@ -11,9 +11,9 @@ namespace Forro.Data
 {
     public interface IForroLevelRepository
     {
+        ForroLevel Get(int id);
         IList<ForroLevel> GetAll();
         void Insert(ForroLevel forroLevel);
-
         void Delete(int id);
     }
 
@@ -28,6 +28,23 @@ namespace Forro.Data
         }
 
         #region Interfaces
+        public ForroLevel Get(int id)
+        {
+            var attributes = new Dictionary<string, AttributeValue>
+            {
+                [nameof(ForroLevel.ForroLevelId)] = new AttributeValue() { N = id.ToString() }
+            };
+
+            var request = new GetItemRequest()
+            {
+                TableName = ForroLevelTableName,
+                Key = attributes
+            };
+
+            var queryResult = _client.GetItemAsync(request).Result;
+            var result = MapForroLevel(queryResult.Item);
+            return result;
+        }
         public IList<ForroLevel> GetAll()
         {
             var request = new ScanRequest()

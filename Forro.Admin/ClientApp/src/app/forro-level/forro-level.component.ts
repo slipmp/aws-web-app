@@ -13,6 +13,7 @@ export class ForroLevelComponent {
   public addingNew = false;
   public forroLevelIdInvalid = false;
   public forroLevelModel: ForroLevel;
+  public fileUpload: File;
 
   private http: HttpClient;
   private apiUrl: string;
@@ -52,5 +53,15 @@ export class ForroLevelComponent {
       //Modal must close once operation is finished
       this.updateGrid();
     }, error => console.error(error));
+  }
+
+  addingNewMethod() {
+    this.addingNew = true;
+
+    //Next available ID for Forró Level
+    if (this.forroLevels.length > 0) {
+      var newId = this.forroLevels[this.forroLevels.length - 1].forroLevelId + 1;
+      this.forroLevelModel.forroLevelId = newId;
+    }
   }
 }
