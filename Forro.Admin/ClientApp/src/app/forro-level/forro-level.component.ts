@@ -20,7 +20,8 @@ export class ForroLevelComponent {
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     this.http = http;
     this.apiUrl = baseUrl + 'api/ForroLevel';
-    this.forroLevelModel = new ForroLevel(1, "");
+    this.forroLevelModel = new ForroLevel(1, "", "");
+    this.forroLevels = new Array<ForroLevel>();
     this.updateGrid();
   }
 
@@ -41,7 +42,7 @@ export class ForroLevelComponent {
         console.log('Result from Http Post: ' + result);
         this.updateGrid();
         this.addingNew = false;
-        this.forroLevelModel = new ForroLevel(1, "");
+        this.forroLevelModel = new ForroLevel(1, "","");
       }, error => console.error(error));
     }
   }

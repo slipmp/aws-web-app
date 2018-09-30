@@ -77,11 +77,16 @@ namespace Forro.Data
 
         private ForroLevel MapForroLevel(Dictionary<string, AttributeValue> result)
         {
-            return new ForroLevel
+            var forroLevel = new ForroLevel
             {
                 ForroLevelId = Convert.ToInt32(result["ForroLevelId"].N),
                 Name = result["Name"].S
             };
+
+            if (result.ContainsKey("ImageUrl"))
+                forroLevel.ImageUrl = result["ImageUrl"].S;
+
+            return forroLevel;
         }
     }
 }

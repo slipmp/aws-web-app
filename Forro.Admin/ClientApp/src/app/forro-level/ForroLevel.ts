@@ -2,6 +2,7 @@ export class ForroLevel {
 
   constructor(
     public forroLevelId: number,
-    public name: string) {
+    public name: string,
+    public imageUrl: string) {
   }
 }
