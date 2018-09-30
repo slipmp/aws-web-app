@@ -32,7 +32,7 @@ namespace Forro.Admin.Controllers
         {
             var result = _forroLevelRepository.GetAll();
 
-            return result;
+            return result.OrderBy(x => x.ForroLevelId);
         }
 
         // GET: api/ForroLevel/5
@@ -46,7 +46,7 @@ namespace Forro.Admin.Controllers
         [HttpPost]
         public void Post([FromBody] ForroLevel value)
         {
-            
+            _forroLevelRepository.Insert(value);
         }
 
         // PUT: api/ForroLevel/5

@@ -4,7 +4,7 @@
 
 <p *ngIf="!forroLevels"><em>Loading...</em></p>
 
-<div  *ngIf="forroLevels">
+<div *ngIf="forroLevels">
   <button type="button" class="btn btn-primary" (click)='addingNew=true'>Add New</button>
 
   <table class='table'>
@@ -12,12 +12,18 @@
       <tr>
         <th>Id</th>
         <th>Name</th>
+        <th>Delete</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let forroLevel of forroLevels">
         <td>{{ forroLevel.forroLevelId }}</td>
         <td>{{ forroLevel.name }}</td>
+        <td>
+          <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#exampleModal" (click)="deleteSelectedForroLevel(forroLevel.forroLevelId)">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>

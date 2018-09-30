@@ -12,6 +12,7 @@ namespace Forro.Data
     public interface IForroLevelRepository
     {
         IList<ForroLevel> GetAll();
+        void Insert(ForroLevel forroLevel);
     }
 
     public class ForroLevelRepository : IForroLevelRepository
@@ -24,6 +25,7 @@ namespace Forro.Data
             _client = client;
         }
 
+        #region Interfaces
         public IList<ForroLevel> GetAll()
         {
             var request = new ScanRequest()
@@ -37,6 +39,23 @@ namespace Forro.Data
 
             return resultList;
         }
+
+        public void Insert(ForroLevel forroLevel)
+        {
+            var attributes = new Dictionary<string, AttributeValue>
+            {
+                [nameof(ForroLevel.ForroLevelId)] = new AttributeValue() { N = forroLevel.ForroLevelId.ToString() },
+                [nameof(ForroLevel.Name)] = new AttributeValue() { S = forroLevel.Name }
+            };
+
+            var request = new PutItemRequest()
+            {
+                TableName = ForroLevelTableName,
+                Item = attributes
+            };
+            var result = _client.PutItemAsync(request).Result;
+        }
+        #endregion Interfaces
 
         private ForroLevel MapForroLevel(Dictionary<string, AttributeValue> result)
         {

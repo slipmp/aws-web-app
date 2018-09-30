@@ -44,6 +44,12 @@ export class ForroLevelComponent {
         this.forroLevelModel = new ForroLevel(1, "");
       }, error => console.error(error));
     }
+  }
 
+  deleteSelectedForroLevel(id:number) {
+    this.http.delete(this.apiUrl + '/' + id).subscribe(result => {
+      //Modal must close once operation is finished
+      this.updateGrid();
+    }, error => console.error(error));
   }
 }
