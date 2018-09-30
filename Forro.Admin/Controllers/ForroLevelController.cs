@@ -59,6 +59,7 @@ namespace Forro.Admin.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            _forroLevelRepository.Delete(id);
         }
     }
 }

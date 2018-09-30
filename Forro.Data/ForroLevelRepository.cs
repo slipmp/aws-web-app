@@ -13,6 +13,8 @@ namespace Forro.Data
     {
         IList<ForroLevel> GetAll();
         void Insert(ForroLevel forroLevel);
+
+        void Delete(int id);
     }
 
     public class ForroLevelRepository : IForroLevelRepository
@@ -55,6 +57,22 @@ namespace Forro.Data
             };
             var result = _client.PutItemAsync(request).Result;
         }
+        public void Delete(int id)
+        {
+            var attributes = new Dictionary<string, AttributeValue>
+            {
+                [nameof(ForroLevel.ForroLevelId)] = new AttributeValue() { N = id.ToString() }
+            };
+
+            var request = new DeleteItemRequest()
+            {
+                TableName = ForroLevelTableName,
+                Key = attributes
+            };
+
+            var result = _client.DeleteItemAsync(request).Result;
+        }
+
         #endregion Interfaces
 
         private ForroLevel MapForroLevel(Dictionary<string, AttributeValue> result)
