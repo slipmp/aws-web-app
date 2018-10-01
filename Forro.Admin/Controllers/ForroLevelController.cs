@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.DynamoDBv2;
+using Amazon.S3;
 using Forro.Data;
 using Forro.Domain;
 using Forro.Services;
@@ -25,7 +26,9 @@ namespace Forro.Admin.Controllers
             var client = new AmazonDynamoDBClient(config);
 
             var forroLevelRepository = new ForroLevelRepository(client);
-            _forroLevelService = new ForroLevelService(forroLevelRepository);
+
+            var s3Client = new AmazonS3Client(RegionEndpoint.USEast2);
+            _forroLevelService = new ForroLevelService(forroLevelRepository, s3Client);
         }
 
         // GET: api/ForroLevel
@@ -48,6 +51,11 @@ namespace Forro.Admin.Controllers
         [HttpPost]
         public void Post([FromBody] ForroLevel value)
         {
+            if(this.Request.Form.Files.Count>0)
+            {
+
+            }
+
             _forroLevelService.Insert(value);
         }
 

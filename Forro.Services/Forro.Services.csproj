@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.3.24.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Forro.Data\Forro.Data.csproj" />
     <ProjectReference Include="..\Forro.Domain\Forro.Domain.csproj" />
   </ItemGroup>
