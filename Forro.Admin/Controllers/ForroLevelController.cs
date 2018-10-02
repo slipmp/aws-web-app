@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
@@ -10,6 +11,7 @@ using Forro.Domain;
 using Forro.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Forro.Admin.Controllers
 {
@@ -49,14 +51,22 @@ namespace Forro.Admin.Controllers
 
         // POST: api/ForroLevel
         [HttpPost]
-        public void Post([FromBody] ForroLevel value)
+        public async void Post()
         {
-            if(this.Request.Form.Files.Count>0)
-            {
+            var result = await Request.ReadFormAsync();
 
+            var json = result["forroLevelModel"];
+            var model = JsonConvert.DeserializeObject<ForroLevel>(json);
+
+            Stream stream = null;
+            if (result.Files.Count > 0)
+            {
+                //Getting only the first file, because as of know the UI is not uploading additional  files
+                stream = result.Files[0].OpenReadStream();
+                model.ImageUrl = result.Files[0].FileName;
             }
 
-            _forroLevelService.Insert(value);
+            _forroLevelService.Insert(model, stream);
         }
 
         // PUT: api/ForroLevel/5

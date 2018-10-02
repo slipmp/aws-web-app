@@ -13,7 +13,7 @@ export class ForroLevelComponent {
   public addingNew = false;
   public forroLevelIdInvalid = false;
   public forroLevelModel: ForroLevel;
-  public fileUpload: File;
+  public selectedFile: File;
 
   private http: HttpClient;
   private apiUrl: string;
@@ -39,7 +39,12 @@ export class ForroLevelComponent {
     }
     else
     {
-      this.http.post(this.apiUrl, this.forroLevelModel).subscribe(result => {
+      const uploadData = new FormData();
+      uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
+      var stringfy = JSON.stringify(this.forroLevelModel);
+      uploadData.append('forroLevelModel', stringfy);
+
+      this.http.post(this.apiUrl, uploadData).subscribe(result => {
         console.log('Result from Http Post: ' + result);
         this.updateGrid();
         this.addingNew = false;
@@ -63,5 +68,9 @@ export class ForroLevelComponent {
       var newId = this.forroLevels[this.forroLevels.length - 1].forroLevelId + 1;
       this.forroLevelModel.forroLevelId = newId;
     }
+  }
+
+  onFileChanged(event) {
+    this.selectedFile = event.target.files[0]
   }
 }

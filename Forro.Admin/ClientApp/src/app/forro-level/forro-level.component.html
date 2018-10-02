@@ -55,7 +55,7 @@
 
     <label for="imageUpload">Image</label>
     <input type="file" class="form-control" id="imageUpload" name="imageUpload" required
-           (change)="fileUpload=$event.target.files"/>
+           (change)="onFileChanged($event)"/>
 
     <br />
     <button type="submit" class="btn btn-primary" [disabled]="!forroForm.form.valid">Add New</button>
