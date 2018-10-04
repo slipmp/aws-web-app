@@ -19,9 +19,9 @@
       <tr *ngFor="let forroLevel of forroLevels">
         <td>{{ forroLevel.forroLevelId }}</td>
         <td>{{ forroLevel.name }}</td>
-        <td><img src="{{ forroLevel.imageUrl }}" alt="{{forroLevel.name}}" width="50" height="70" *ngIf="forroLevel.imageUrl"/></td>
+        <td><img src="{{ forroLevel.imageUrl }}" alt="{{forroLevel.name}}" width="50" height="70" *ngIf="forroLevel.imageUrl" /></td>
         <td>
-          <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#exampleModal" (click)="deleteSelectedForroLevel(forroLevel.forroLevelId)">
+          <button type="button" class="btn btn-default btn-sm" (click)="deleteSelectedForroLevel(forroLevel.forroLevelId)">
             <span class="glyphicon glyphicon-trash"></span>
           </button>
         </td>
