@@ -38,7 +38,8 @@ namespace Forro.Services
 
             foreach(var forroLevel in result)
             {
-                forroLevel.ImageUrl = _bucketFullUrl + forroLevel.ImageUrl;
+                if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
+                    forroLevel.ImageUrl = _bucketFullUrl + forroLevel.ImageUrl;
             }
 
             return result;

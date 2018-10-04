@@ -40,7 +40,10 @@ export class ForroLevelComponent {
     else
     {
       const uploadData = new FormData();
-      uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
+
+      if (this.selectedFile != null)
+        uploadData.append('myFile', this.selectedFile, this.selectedFile.name);
+
       var stringfy = JSON.stringify(this.forroLevelModel);
       uploadData.append('forroLevelModel', stringfy);
 

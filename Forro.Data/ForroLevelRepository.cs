@@ -64,9 +64,11 @@ namespace Forro.Data
             var attributes = new Dictionary<string, AttributeValue>
             {
                 [nameof(ForroLevel.ForroLevelId)] = new AttributeValue() { N = forroLevel.ForroLevelId.ToString() },
-                [nameof(ForroLevel.Name)] = new AttributeValue() { S = forroLevel.Name },
-                [nameof(ForroLevel.ImageUrl)] = new AttributeValue() { S = forroLevel.ImageUrl }
+                [nameof(ForroLevel.Name)] = new AttributeValue() { S = forroLevel.Name }
             };
+
+            if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
+                attributes.Add(nameof(ForroLevel.ImageUrl), new AttributeValue() { S = forroLevel.ImageUrl });
 
             var request = new PutItemRequest()
             {
