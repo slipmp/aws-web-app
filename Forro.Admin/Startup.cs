@@ -1,3 +1,4 @@
+using Forro.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,8 @@ namespace Forro.Admin
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddScoped<ILoggerManager, CloudWatchLogger>();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -29,7 +32,7 @@ namespace Forro.Admin
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
@@ -40,6 +43,7 @@ namespace Forro.Admin
                 app.UseExceptionHandler("/Error");
             }
 
+            app.ConfigureExceptionHandler(logger);
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
