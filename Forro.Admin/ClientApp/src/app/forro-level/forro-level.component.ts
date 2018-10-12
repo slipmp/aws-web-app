@@ -15,22 +15,26 @@ export class ForroLevelComponent {
   public forroLevelModel: ForroLevel;
   public selectedFile: File;
 
-  private http: HttpClient;
   private apiUrl: string;
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    this.http = http;
+  private error: string;
+
+  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     this.apiUrl = baseUrl + 'api/ForroLevel';
     this.forroLevelModel = new ForroLevel(1, "", "");
     this.forroLevels = new Array<ForroLevel>();
     this.updateGrid();
   }
 
+  handleError(error) {
+    console.error(error);
+  }
+
   updateGrid() {
     this.http.get<ForroLevel[]>(this.apiUrl)
       .subscribe(result => {
         this.forroLevels = result;
-      }, error => console.error(error));
+      }, error => this.handleError(error));
   }
 
   insert() {
@@ -52,7 +56,7 @@ export class ForroLevelComponent {
         this.updateGrid();
         this.addingNew = false;
         this.forroLevelModel = new ForroLevel(1, "","");
-      }, error => console.error(error));
+      }, error => this.handleError(error));
     }
   }
 
@@ -60,7 +64,7 @@ export class ForroLevelComponent {
     this.http.delete(this.apiUrl + '/' + id).subscribe(result => {
       //Modal must close once operation is finished
       this.updateGrid();
-    }, error => console.error(error));
+    }, error => this.handleError(error));
   }
 
   addingNewMethod() {

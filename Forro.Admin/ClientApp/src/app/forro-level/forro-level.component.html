@@ -5,6 +5,10 @@
 <p *ngIf="!forroLevels"><em>Loading...</em></p>
 
 <button type="button" class="btn btn-primary" (click)='addingNewMethod()'>Add New</button>
+<div class="alert alert-danger" style="margin-top:10px;margin-bottom:10px;">
+  <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action.
+
+</div>
 <div *ngIf="forroLevels.length>0">
   <table class='table'>
     <thead>
