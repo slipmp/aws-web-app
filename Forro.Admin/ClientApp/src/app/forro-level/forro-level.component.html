@@ -2,14 +2,15 @@
 
 <p>These levels are used for filtering dancing moves</p>
 
-<p *ngIf="!forroLevels"><em>Loading...</em></p>
+<p *ngIf="!forroLevelModel"><em>Loading...</em></p>
 
 <button type="button" class="btn btn-primary" (click)='addingNewMethod()'>Add New</button>
-<div class="alert alert-danger" style="margin-top:10px;margin-bottom:10px;">
-  <strong>Danger!</strong> This alert box could indicate a dangerous or potentially negative action.
 
+<div *ngIf="forroLevelModel.errorMessage" class="alert alert-danger" style="margin-top:10px;margin-bottom:10px;">
+  <strong>Error message: </strong> {{ forroLevelModel.errorMessage }}
 </div>
-<div *ngIf="forroLevels.length>0">
+
+<div *ngIf="forroLevelModel.forroLevelList.length>0">
   <table class='table'>
     <thead>
       <tr>
@@ -20,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let forroLevel of forroLevels">
+      <tr *ngFor="let forroLevel of forroLevelModel.forroLevelList">
         <td>{{ forroLevel.forroLevelId }}</td>
         <td>{{ forroLevel.name }}</td>
         <td><img src="{{ forroLevel.imageUrl }}" alt="{{forroLevel.name}}" width="50" height="70" *ngIf="forroLevel.imageUrl" /></td>
@@ -38,7 +39,7 @@
 
     <label for="txtId">Id</label>
     <input type="number" class="form-control" id="txtId" name="txtId" required min="1" max="10"
-           [(ngModel)]="forroLevelModel.forroLevelId">
+           [(ngModel)]="forroLevelModel.forroLevel.forroLevelId">
     <div *ngIf="forroLevelIdInvalid" class="alert alert-danger">
       Forró Level is required and it must be between 1 and 10
     </div>
@@ -46,7 +47,7 @@
     <label for="txtLevel">Level</label>
     <input type="text" class="form-control" id="txtLevel" name="txtLevel" placeholder="Enter level name"
            required
-           [(ngModel)]="forroLevelModel.name" minlength="4" #name="ngModel">
+           [(ngModel)]="forroLevelModel.forroLevel.name" minlength="4" #name="ngModel">
 
     <div *ngIf="name.invalid && (name.dirty || name.touched)">
       <div *ngIf="name.errors.required" class="alert alert-danger">

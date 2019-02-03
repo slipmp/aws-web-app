@@ -41,7 +41,7 @@ namespace Forro.Services
                 if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
                     forroLevel.ImageUrl = _bucketFullUrl + forroLevel.ImageUrl;
             }
-
+            
             return result;
         }
 

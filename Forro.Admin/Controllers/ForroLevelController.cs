@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.S3;
+using Forro.Admin.Models;
 using Forro.Data;
 using Forro.Domain;
 using Forro.Services;
@@ -35,11 +36,27 @@ namespace Forro.Admin.Controllers
 
         // GET: api/ForroLevel
         [HttpGet]
-        public IEnumerable<ForroLevel> Get()
+        public IActionResult Get()
         {
-            var result = _forroLevelService.GetAll();
+            try
+            {
+                var forroLevelList = _forroLevelService.GetAll();
 
-            return result.OrderBy(x => x.ForroLevelId);
+                forroLevelList = forroLevelList.OrderBy(x => x.ForroLevelId).ToList();
+
+                return Ok(new ForroLevelModel()
+                {
+                    ForroLevelList = forroLevelList,
+                    ErrorMessage = ""
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new ForroLevelModel()
+                {
+                    ErrorMessage = ex.ToString()
+                });
+            }
         }
 
         // GET: api/ForroLevel/5
@@ -51,11 +68,11 @@ namespace Forro.Admin.Controllers
 
         // POST: api/ForroLevel
         [HttpPost]
-        public async void Post()
+        public async Task<ActionResult> Post()
         {
             var result = await Request.ReadFormAsync();
 
-            var json = result["forroLevelModel"];
+            var json = result["forroLevel"];
             var model = JsonConvert.DeserializeObject<ForroLevel>(json);
 
             Stream stream = null;
@@ -67,6 +84,8 @@ namespace Forro.Admin.Controllers
             }
 
             _forroLevelService.Insert(model, stream);
+
+            return Ok();
         }
 
         // PUT: api/ForroLevel/5
