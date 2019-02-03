@@ -16,9 +16,7 @@ export class ForroLevelComponent {
   public selectedFile: File;
 
   private apiUrl: string;
-
-  private error: string;
-
+  
   constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     this.apiUrl = baseUrl + 'api/ForroLevel';
     this.assignNewForroLevelModel();
@@ -33,7 +31,7 @@ export class ForroLevelComponent {
   handleError(error) {
     console.log("There was an error calling BackEnd API - handleError(): ");
     console.error(error);
-    this.forroLevelModel.errorMessage = error.error.errorMessage;
+    this.forroLevelModel.errorMessage = error.error.errorMessage || error.error.Message;
   }
 
   updateGrid() {

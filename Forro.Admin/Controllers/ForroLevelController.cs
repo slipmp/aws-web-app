@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Amazon;
-using Amazon.DynamoDBv2;
-using Amazon.S3;
 using Forro.Admin.Models;
-using Forro.Data;
 using Forro.Domain;
 using Forro.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -20,18 +14,11 @@ namespace Forro.Admin.Controllers
     [ApiController]
     public class ForroLevelController : ControllerBase
     {
-        private readonly ForroLevelService _forroLevelService;
+        private readonly IForroLevelService _forroLevelService;
 
-        public ForroLevelController()
+        public ForroLevelController(IForroLevelService forroLevelService)
         {
-            var config = new AmazonDynamoDBConfig();
-            config.RegionEndpoint = RegionEndpoint.USEast2;
-            var client = new AmazonDynamoDBClient(config);
-
-            var forroLevelRepository = new ForroLevelRepository(client);
-
-            var s3Client = new AmazonS3Client(RegionEndpoint.USEast2);
-            _forroLevelService = new ForroLevelService(forroLevelRepository, s3Client);
+            _forroLevelService = forroLevelService;
         }
 
         // GET: api/ForroLevel

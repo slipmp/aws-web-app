@@ -23,14 +23,16 @@ namespace Forro.Services
         private IAmazonS3 _amazonS3;
 
         //Ideally, below configuration would be placed either on a configuration file, Database, CICD tool as a variable, etc. But not here! lol
-        private const string _bucketName="paulo-bucket";
+        private readonly string _bucketName;
+        private readonly string _bucketFullUrl;
         private const string _forroLevelFolder = "level/";
-        private readonly string _bucketFullUrl = $"https://s3.us-east-2.amazonaws.com/{_bucketName}/";
-
-        public ForroLevelService(IForroLevelRepository repository, IAmazonS3 amazonS3)
+        
+        public ForroLevelService(IForroLevelRepository repository, IAmazonS3 amazonS3, string bucketName, string regionString)
         {
-            _amazonS3 = amazonS3;
             _repository = repository;
+            _amazonS3 = amazonS3;
+            _bucketName = bucketName;
+            _bucketFullUrl = $"https://s3.{regionString}.amazonaws.com/{_bucketName}/";
         }
         public IList<ForroLevel> GetAll()
         {
