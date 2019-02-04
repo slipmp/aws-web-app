@@ -23,11 +23,11 @@ namespace Forro.Admin.Controllers
 
         // GET: api/ForroLevel
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var forroLevelList = _forroLevelService.GetAll();
+                var forroLevelList = await _forroLevelService.GetAll();
 
                 forroLevelList = forroLevelList.OrderBy(x => x.ForroLevelId).ToList();
 

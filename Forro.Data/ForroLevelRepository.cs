@@ -6,13 +6,14 @@ using Forro.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Forro.Data
 {
     public interface IForroLevelRepository
     {
         ForroLevel Get(int id);
-        IList<ForroLevel> GetAll();
+        Task<IList<ForroLevel>> GetAll();
         void Insert(ForroLevel forroLevel);
         void Delete(int id);
     }
@@ -45,14 +46,14 @@ namespace Forro.Data
             var result = MapForroLevel(queryResult.Item);
             return result;
         }
-        public IList<ForroLevel> GetAll()
+        public async Task<IList<ForroLevel>> GetAll()
         {
             var request = new ScanRequest()
             {
                 TableName = ForroLevelTableName
             };
-
-            var queryResult = _client.ScanAsync(request).Result;
+            
+            var queryResult = await _client.ScanAsync(request);
 
             var resultList = queryResult.Items.Select(MapForroLevel).ToList();
 

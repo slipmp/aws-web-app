@@ -6,12 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Forro.Services
 {
     public interface IForroLevelService
     {
-        IList<ForroLevel> GetAll();
+        Task<IList<ForroLevel>> GetAll();
         void Insert(ForroLevel forroLevel);
         void Insert(ForroLevel forroLevel, Stream forroLogoStream);
         void Delete(int id);
@@ -34,9 +35,9 @@ namespace Forro.Services
             _bucketName = bucketName;
             _bucketFullUrl = $"https://s3.{regionString}.amazonaws.com/{_bucketName}/";
         }
-        public IList<ForroLevel> GetAll()
+        public async Task<IList<ForroLevel>> GetAll()
         {
-            var result = _repository.GetAll();
+            var result = await _repository.GetAll();
 
             foreach(var forroLevel in result)
             {

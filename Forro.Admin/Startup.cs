@@ -85,10 +85,11 @@ namespace Forro.Admin
 
                 var config = new AmazonDynamoDBConfig
                 {
-                    RegionEndpoint = regionObject
+                    RegionEndpoint = regionObject,
+                    Timeout = new System.TimeSpan(0, 1, 0)
                 };
                 var client = new AmazonDynamoDBClient(config);
-
+                
                 var forroLevelRepository = new ForroLevelRepository(client);
 
                 var s3Client = new AmazonS3Client(regionObject);
