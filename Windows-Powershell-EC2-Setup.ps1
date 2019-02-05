@@ -16,5 +16,5 @@ dotnet publish --configuration Release #> donetpublish-logs.txt
 
 Import-Module WebAdministration 
 
-Set-ItemProperty 'IIS:\Sites\Default Web Site' -Name physicalPath -Value C:\forro\Forro.Admin\bin\Release\netcoreapp2.2\publish
+Set-ItemProperty 'IIS:\Sites\Default Web Site' -Name physicalPath -Value C:\forro\Forro.Admin\bin\Release\netcoreapp2.1\publish
 </powershell>
