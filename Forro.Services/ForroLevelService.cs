@@ -20,23 +20,31 @@ namespace Forro.Services
 
     public class ForroLevelService : IForroLevelService
     {
-        private IForroLevelRepository _repository;
-        private IAmazonS3 _amazonS3;
+        private readonly IForroLevelRepository _repository;
+        private readonly IAmazonS3 _amazonS3;
 
+        private readonly ILoggerManager _loggerManager;
         //Ideally, below configuration would be placed either on a configuration file, Database, CICD tool as a variable, etc. But not here! lol
         private readonly string _bucketName;
         private readonly string _bucketFullUrl;
         private const string _forroLevelFolder = "level/";
         
-        public ForroLevelService(IForroLevelRepository repository, IAmazonS3 amazonS3, string bucketName, string regionString)
+        public ForroLevelService(IForroLevelRepository repository, 
+            IAmazonS3 amazonS3,
+            ILoggerManager loggerManager,
+            string bucketName, 
+            string regionString)
         {
             _repository = repository;
             _amazonS3 = amazonS3;
+            _loggerManager = loggerManager;
             _bucketName = bucketName;
             _bucketFullUrl = $"https://s3.{regionString}.amazonaws.com/{_bucketName}/";
         }
         public async Task<IList<ForroLevel>> GetAll()
         {
+            _loggerManager.LogInfo("Method GetAll() was called");
+
             var result = await _repository.GetAll();
 
             foreach(var forroLevel in result)

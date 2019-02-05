@@ -1,5 +1,4 @@
-﻿//using Amazon.CloudWatch;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,25 +15,14 @@ namespace Forro.Services
 
         public void LogError(string message)
         {
-            System.Diagnostics.Debug.WriteLine("Marcos: " + message);
+            var logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Error(message);
         }
 
         public void LogInfo(string message)
         {
-            //using (var cw = new AmazonCloudWatchClient(_endpoint))
-            //{
-            //    cw.PutMetricData(new PutMetricDataRequest
-            //    {
-            //        MetricData = new List<MetricDatum>{new MetricDatum
-            //    {
-            //        MetricName = "PagesVisited",
-            //        Dimensions = new List<Dimension>{dimension},
-            //        Unit = "None",
-            //        Value = 1.0
-            //    }},
-            //                Namespace = "SITE/TRAFFIC"
-            //    });
-            //}
+            var logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Info(message);
         }
     }
 }

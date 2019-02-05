@@ -21,7 +21,7 @@ namespace Forro.Admin
         public void DeclareDependencies(IServiceCollection services)
         {
             services.Configure<ForroAppConfig>(Configuration.GetSection("ForroAppConfig"));
-
+            
             services.AddScoped<ILoggerManager>(x =>
             {
                 var forroAppConfig = x.GetService<IOptions<ForroAppConfig>>();
@@ -45,7 +45,9 @@ namespace Forro.Admin
                 var forroLevelRepository = new ForroLevelRepository(client);
 
                 var s3Client = new AmazonS3Client(regionObject);
-                var forroLevelService = new ForroLevelService(forroLevelRepository, s3Client,
+                var loggerManager = new CloudWatchLogger(regionObject);
+
+                var forroLevelService = new ForroLevelService(forroLevelRepository, s3Client, loggerManager,
                     forroAppConfig.Value.AWSForroBucketName, forroAppConfig.Value.AWSRegionEndpoint);
 
                 return forroLevelService;

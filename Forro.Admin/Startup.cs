@@ -25,6 +25,10 @@ namespace Forro.Admin
             var dependencyInjectionRegister = new DependencyInjectionRegister(Configuration);
             dependencyInjectionRegister.DeclareDependencies(services);
 
+            var serviceProvider = services.BuildServiceProvider();
+            var nLogConfig = new NLogConfig(serviceProvider);
+            nLogConfig.ConfigNLogToUseAWSCloudWatch();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
