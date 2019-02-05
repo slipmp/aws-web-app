@@ -7,5 +7,6 @@ namespace Forro.Services
     public interface ILoggerManager
     {
         void LogError(string message);
+        void LogInfo(string message);
     }
 }
