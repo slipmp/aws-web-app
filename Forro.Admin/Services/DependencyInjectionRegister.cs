@@ -53,6 +53,17 @@ namespace Forro.Admin
                 return forroLevelService;
             });
 
+            services.AddScoped<IForroLevelMessage>(x =>
+            {
+                var forroAppConfig = x.GetService<IOptions<ForroAppConfig>>();
+                var regionObject = RegionEndpoint.GetBySystemName(forroAppConfig.Value.AWSRegionEndpoint);
+
+                //I will leave it hard-coded - maybe not optimum but suits my immediate needs.
+                var forroLevelQueueName = "Paulo-Forro-SQS";
+
+                var forroLevelMessage = new ForroLevelMessage(forroLevelQueueName, regionObject);
+                return forroLevelMessage;
+            });
         }
     }
 }

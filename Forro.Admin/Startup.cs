@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Forro.Admin
 {
@@ -29,11 +30,18 @@ namespace Forro.Admin
             var nLogConfig = new NLogConfig(serviceProvider);
             nLogConfig.ConfigNLogToUseAWSCloudWatch();
 
+            EnsureSQSForroLevelCreation(serviceProvider);
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+        }
+
+        private void EnsureSQSForroLevelCreation(IServiceProvider serviceProvider)
+        {
+            var forroLevelMessage = serviceProvider.GetRequiredService<IForroLevelMessage>();
+            forroLevelMessage.EnsureSQSForroLevelCreation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -26,7 +26,7 @@ namespace Forro.Admin
             //Reason why it is implemented here - NO DUPLICATIONS!! lol
             var awsTarget = new AWSTarget()
             {
-                LogGroup = "PauloForroGroup-Logs",
+                LogGroup = "Paulo-Forro-GroupLogs",
                 Region = _aWSRegionEndpoint
             };
             config.AddTarget("aws", awsTarget);
