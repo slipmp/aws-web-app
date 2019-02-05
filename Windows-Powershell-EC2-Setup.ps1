@@ -12,7 +12,7 @@ cd forro
 cd Forro.Admin
 choco install nodejs.install -y
 refreshenv
-dotnet publish --configuration Release
+dotnet publish --configuration Release #> donetpublish-logs.txt
 
 Import-Module WebAdministration 
 
