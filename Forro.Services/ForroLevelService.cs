@@ -13,8 +13,8 @@ namespace Forro.Services
     public interface IForroLevelService
     {
         Task<IList<ForroLevel>> GetAll();
-        void Insert(ForroLevel forroLevel);
-        void Insert(ForroLevel forroLevel, Stream forroLogoStream);
+        Task<ForroLevel> Insert(ForroLevel forroLevel);
+        Task<ForroLevel> Insert(ForroLevel forroLevel, Stream forroLogoStream);
         void Delete(int id);
     }
 
@@ -28,18 +28,23 @@ namespace Forro.Services
         private readonly string _bucketName;
         private readonly string _bucketFullUrl;
         private const string _forroLevelFolder = "level/";
-        
+
+        private readonly IForroLevelMessage _forroLevelMessage;
+
         public ForroLevelService(IForroLevelRepository repository, 
             IAmazonS3 amazonS3,
             ILoggerManager loggerManager,
             string bucketName, 
-            string regionString)
+            string regionString,
+            IForroLevelMessage forroLevelMessage)
         {
             _repository = repository;
             _amazonS3 = amazonS3;
             _loggerManager = loggerManager;
             _bucketName = bucketName;
             _bucketFullUrl = $"https://s3.{regionString}.amazonaws.com/{_bucketName}/";
+
+            _forroLevelMessage = forroLevelMessage;
         }
         public async Task<IList<ForroLevel>> GetAll()
         {
@@ -56,12 +61,13 @@ namespace Forro.Services
             return result;
         }
 
-        public void Insert(ForroLevel forroLevel)
+        public async Task<ForroLevel> Insert(ForroLevel forroLevel)
         {
-            this.Insert(forroLevel, null);
+            var result = await Insert(forroLevel, null);
+            return result;
         }
 
-        public void Insert(ForroLevel forroLevel, Stream fileLogoStream)
+        public async Task<ForroLevel> Insert(ForroLevel forroLevel, Stream fileLogoStream)
         {
             //If there is a file being uploaded
             if (fileLogoStream != null)
@@ -79,7 +85,12 @@ namespace Forro.Services
                 var result = _amazonS3.PutObjectAsync(request).Result;
                 forroLevel.ImageUrl = objectKey;
             }
-            _repository.Insert(forroLevel);
+            var newForroLevel = await _repository.Insert(forroLevel);
+
+            //Send a message to SQS notifying about the new Forró level
+            await _forroLevelMessage.SendMessageToForroLevelSQS(newForroLevel);
+
+            return newForroLevel;
         }
 
         public void Delete(int id)

@@ -46,9 +46,10 @@ namespace Forro.Admin
 
                 var s3Client = new AmazonS3Client(regionObject);
                 var loggerManager = new CloudWatchLogger(regionObject);
+                var forroLevelMessage = x.GetRequiredService<IForroLevelMessage>();
 
                 var forroLevelService = new ForroLevelService(forroLevelRepository, s3Client, loggerManager,
-                    forroAppConfig.Value.AWSForroBucketName, forroAppConfig.Value.AWSRegionEndpoint);
+                    forroAppConfig.Value.AWSForroBucketName, forroAppConfig.Value.AWSRegionEndpoint, forroLevelMessage);
 
                 return forroLevelService;
             });

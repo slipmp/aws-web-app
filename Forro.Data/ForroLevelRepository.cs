@@ -14,7 +14,7 @@ namespace Forro.Data
     {
         ForroLevel Get(int id);
         Task<IList<ForroLevel>> GetAll();
-        void Insert(ForroLevel forroLevel);
+        Task<ForroLevel> Insert(ForroLevel forroLevel);
         void Delete(int id);
     }
 
@@ -60,7 +60,7 @@ namespace Forro.Data
             return resultList;
         }
 
-        public void Insert(ForroLevel forroLevel)
+        public async Task<ForroLevel> Insert(ForroLevel forroLevel)
         {
             var attributes = new Dictionary<string, AttributeValue>
             {
@@ -76,7 +76,10 @@ namespace Forro.Data
                 TableName = ForroLevelTableName,
                 Item = attributes
             };
-            var result = _client.PutItemAsync(request).Result;
+            var result = await _client.PutItemAsync(request);
+            
+            return forroLevel;
+
         }
         public void Delete(int id)
         {

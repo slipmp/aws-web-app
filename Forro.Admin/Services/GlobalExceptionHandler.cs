@@ -26,7 +26,7 @@ namespace Forro.Admin
                         await context.Response.WriteAsync(new ForroErrorDetails()
                         {
                             StatusCode = context.Response.StatusCode,
-                            Message = "Internal Server Error."
+                            Message = $"Internal Server Error. Something went wrong: {contextFeature.Error}"
                         }.ToString());
                     }
                 });

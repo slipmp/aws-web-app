@@ -70,7 +70,7 @@ namespace Forro.Admin.Controllers
                 model.ImageUrl = result.Files[0].FileName;
             }
 
-            _forroLevelService.Insert(model, stream);
+            await _forroLevelService.Insert(model, stream);
 
             return Ok();
         }
