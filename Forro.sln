@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forro.Data", "Forro.Data\Fo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forro.Domain", "Forro.Domain\Forro.Domain.csproj", "{F856EDFF-D28A-4AFA-A9BF-32C5B100B158}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forro.Services", "Forro.Services\Forro.Services.csproj", "{B2C7D1DC-6462-4413-8D41-6F3F5A891517}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forro.Services", "Forro.Services\Forro.Services.csproj", "{B2C7D1DC-6462-4413-8D41-6F3F5A891517}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forro.Lambda", "Forro.Lambda\Forro.Lambda.csproj", "{5AFFF878-6A66-4BAB-9160-080215556EFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B2C7D1DC-6462-4413-8D41-6F3F5A891517}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2C7D1DC-6462-4413-8D41-6F3F5A891517}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2C7D1DC-6462-4413-8D41-6F3F5A891517}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AFFF878-6A66-4BAB-9160-080215556EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AFFF878-6A66-4BAB-9160-080215556EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AFFF878-6A66-4BAB-9160-080215556EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AFFF878-6A66-4BAB-9160-080215556EFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
