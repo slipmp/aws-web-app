@@ -48,7 +48,8 @@ namespace Forro.Lambda
 
         private async Task ProcessMessageAsync(SQSEvent.SQSMessage message, ILambdaContext context)
         {
-            context.Logger.LogLine($"Processed message {message.Body}");
+            context.Logger.LogLine($"Start processing Forró Level message and creating its ThumbNail!");
+            context.Logger.LogLine($"Message Body: {message.Body}");
 
             // TODO: Do interesting work based on the new message
             await Task.CompletedTask;

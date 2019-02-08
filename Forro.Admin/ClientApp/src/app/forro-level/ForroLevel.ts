@@ -4,6 +4,6 @@ export class ForroLevel {
     public forroLevelId: number,
     public name: string,
     public imageUrl: string,
-    public thumbNailsImageUrl: string) {
+    public thumbNailImageUrl: string) {
   }
 }

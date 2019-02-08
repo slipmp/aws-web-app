@@ -72,8 +72,8 @@ namespace Forro.Data
             if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
                 attributes.Add(nameof(ForroLevel.ImageUrl), new AttributeValue() { S = forroLevel.ImageUrl });
 
-            if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailsImageUrl))
-                attributes.Add(nameof(ForroLevel.ThumbNailsImageUrl), new AttributeValue() { S = forroLevel.ThumbNailsImageUrl });
+            if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailImageUrl))
+                attributes.Add(nameof(ForroLevel.ThumbNailImageUrl), new AttributeValue() { S = forroLevel.ThumbNailImageUrl });
 
             var request = new PutItemRequest()
             {
@@ -128,8 +128,8 @@ namespace Forro.Data
             if (result.ContainsKey("ImageUrl"))
                 forroLevel.ImageUrl = result["ImageUrl"].S;
 
-            if (result.ContainsKey("ThumbNailsImageUrl"))
-                forroLevel.ThumbNailsImageUrl = result["ThumbNailsImageUrl"].S;
+            if (result.ContainsKey("ThumbNailImageUrl"))
+                forroLevel.ThumbNailImageUrl = result["ThumbNailImageUrl"].S;
 
             return forroLevel;
         }

@@ -58,8 +58,8 @@ namespace Forro.Services
                 if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
                     forroLevel.ImageUrl = _bucketFullUrl + forroLevel.ImageUrl;
 
-                if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailsImageUrl))
-                    forroLevel.ThumbNailsImageUrl = _bucketFullUrl + forroLevel.ThumbNailsImageUrl;
+                if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailImageUrl))
+                    forroLevel.ThumbNailImageUrl = _bucketFullUrl + forroLevel.ThumbNailImageUrl;
             }
             
             return result;
@@ -74,7 +74,7 @@ namespace Forro.Services
         public async Task<ForroLevel> Insert(ForroLevel forroLevel, Stream fileLogoStream)
         {
             var imageUrl = await UploadFileToS3(fileLogoStream, forroLevel.ForroLevelId,
-                forroLevel.Name, forroLevel.ImageUrl, UrlOrThumbNails.URL);
+                forroLevel.Name, forroLevel.ImageUrl, UrlOrThumbNail.URL);
             
             //Update using actual S3 ObjectKey
             forroLevel.ImageUrl = imageUrl;
@@ -86,17 +86,17 @@ namespace Forro.Services
             return newForroLevel;
         }
 
-        public async Task<ForroLevel> Update(ForroLevel forroLevel, Stream fileLogoStream, Stream fileThumbNailsStream)
+        public async Task<ForroLevel> Update(ForroLevel forroLevel, Stream fileLogoStream, Stream fileThumbNailStream)
         {
             var imageUrl = await UploadFileToS3(fileLogoStream, forroLevel.ForroLevelId,
-                forroLevel.Name, forroLevel.ImageUrl, UrlOrThumbNails.URL);
+                forroLevel.Name, forroLevel.ImageUrl, UrlOrThumbNail.URL);
 
-            var thumbNailsImageUrl = await UploadFileToS3(fileThumbNailsStream, forroLevel.ForroLevelId,
-                forroLevel.Name, forroLevel.ThumbNailsImageUrl, UrlOrThumbNails.ThumbNails);
+            var thumbNailImageUrl = await UploadFileToS3(fileThumbNailStream, forroLevel.ForroLevelId,
+                forroLevel.Name, forroLevel.ThumbNailImageUrl, UrlOrThumbNail.ThumbNail);
 
             //Update using actual S3 ObjectKey
             forroLevel.ImageUrl = imageUrl;
-            forroLevel.ThumbNailsImageUrl = thumbNailsImageUrl;
+            forroLevel.ThumbNailImageUrl = thumbNailImageUrl;
 
             var newForroLevel = await _repository.Update(forroLevel);
             
@@ -116,9 +116,9 @@ namespace Forro.Services
             {
                 _amazonS3.DeleteAsync(_bucketName, forroLevel.ImageUrl, null).Wait();
             }
-            if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailsImageUrl))
+            if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailImageUrl))
             {
-                _amazonS3.DeleteAsync(_bucketName, forroLevel.ThumbNailsImageUrl, null).Wait();
+                _amazonS3.DeleteAsync(_bucketName, forroLevel.ThumbNailImageUrl, null).Wait();
             }
         }
         #endregion IForroLevelService implementation
@@ -126,14 +126,14 @@ namespace Forro.Services
         #region Private Methods
 
         private async Task<string> UploadFileToS3(Stream fileStream, int forroLevelId, string forroLevelName, string imageUrl,
-            UrlOrThumbNails urlOrThumbNails)
+            UrlOrThumbNail urlOrThumbNail)
         {
             //If there is a file being uploaded
             if (fileStream != null)
             {
                 var fileExtension = Path.GetExtension(imageUrl);
 
-                var objectKey = GetNewImageUrlObjectKey(forroLevelId, forroLevelName, urlOrThumbNails,
+                var objectKey = GetNewImageUrlObjectKey(forroLevelId, forroLevelName, urlOrThumbNail,
                     fileExtension);
 
                 //var stream = new FileStream();
@@ -149,21 +149,21 @@ namespace Forro.Services
             }
             return "";
         }
-        private string GetNewImageUrlObjectKey(int forroLevelId, string forroLevelName, UrlOrThumbNails urlOrThumbNails, 
+        private string GetNewImageUrlObjectKey(int forroLevelId, string forroLevelName, UrlOrThumbNail urlOrThumbNail, 
             string fileExtension)
         {
             var result = Regex.Replace(forroLevelName.Trim(), "[^a-zA-Z0-9_.]+", "-", RegexOptions.Compiled);
 
-            result = forroLevelId + "-" + result.ToLower() + "-" + urlOrThumbNails.ToString().ToLower();
+            result = forroLevelId + "-" + result.ToLower() + "-" + urlOrThumbNail.ToString().ToLower();
             result = result + fileExtension;
 
             result = _forroLevelFolder + result;
             return result;
         }
 
-        private enum UrlOrThumbNails
+        private enum UrlOrThumbNail
         {
-            URL, ThumbNails
+            URL, ThumbNail
         }
         #endregion Private Methods
     }
