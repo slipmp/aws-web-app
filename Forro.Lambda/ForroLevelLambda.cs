@@ -34,11 +34,16 @@ namespace Forro.Lambda
         /// <returns></returns>
         public async Task FunctionHandler(SQSEvent evnt, ILambdaContext context)
         {
-            context.Logger.LogLine("Hello World to Forró Lambda!");
-            //foreach(var message in evnt.Records)
-            //{
-            //    await ProcessMessageAsync(message, context);
-            //}
+            if (evnt == null)
+            {
+                throw new ArgumentNullException(nameof(evnt), "A SQS Event must be provided in order to Lambda be functional.");
+            }
+
+            context.Logger.LogLine("SQSEvent.ToString() => " + evnt.ToString());
+            foreach (var message in evnt.Records)
+            {
+                await ProcessMessageAsync(message, context);
+            }
         }
 
         private async Task ProcessMessageAsync(SQSEvent.SQSMessage message, ILambdaContext context)
