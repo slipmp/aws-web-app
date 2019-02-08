@@ -24,7 +24,7 @@ export class ForroLevelComponent {
   }
 
   assignNewForroLevelModel() {
-    this.forroLevelModel = new ForroLevelModel(new ForroLevel(0, "", ""), new Array(), "");
+    this.forroLevelModel = new ForroLevelModel(new ForroLevel(0, "", "", ""), new Array(), "");
     this.selectedFile = null;
   }
 

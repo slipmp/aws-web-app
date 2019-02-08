@@ -46,6 +46,7 @@ namespace Forro.Services
 
             _forroLevelMessage = forroLevelMessage;
         }
+        #region IForroLevelService implementation
         public async Task<IList<ForroLevel>> GetAll()
         {
             _loggerManager.LogInfo("Method GetAll() was called");
@@ -56,6 +57,9 @@ namespace Forro.Services
             {
                 if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
                     forroLevel.ImageUrl = _bucketFullUrl + forroLevel.ImageUrl;
+
+                if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailsImageUrl))
+                    forroLevel.ThumbNailsImageUrl = _bucketFullUrl + forroLevel.ThumbNailsImageUrl;
             }
             
             return result;
@@ -69,27 +73,33 @@ namespace Forro.Services
 
         public async Task<ForroLevel> Insert(ForroLevel forroLevel, Stream fileLogoStream)
         {
-            //If there is a file being uploaded
-            if (fileLogoStream != null)
-            {
-                var objectKey = GetNewObjectKey(forroLevel);
-
-                //var stream = new FileStream();
-                var request = new PutObjectRequest()
-                {
-                    Key = objectKey,
-                    BucketName = _bucketName,
-                    InputStream = fileLogoStream
-                };
-
-                var result = _amazonS3.PutObjectAsync(request).Result;
-                forroLevel.ImageUrl = objectKey;
-            }
+            var imageUrl = await UploadFileToS3(fileLogoStream, forroLevel.ForroLevelId,
+                forroLevel.Name, forroLevel.ImageUrl, UrlOrThumbNails.URL);
+            
+            //Update using actual S3 ObjectKey
+            forroLevel.ImageUrl = imageUrl;
             var newForroLevel = await _repository.Insert(forroLevel);
 
             //Send a message to SQS notifying about the new Forró level
             await _forroLevelMessage.SendMessageToForroLevelSQS(newForroLevel);
 
+            return newForroLevel;
+        }
+
+        public async Task<ForroLevel> Update(ForroLevel forroLevel, Stream fileLogoStream, Stream fileThumbNailsStream)
+        {
+            var imageUrl = await UploadFileToS3(fileLogoStream, forroLevel.ForroLevelId,
+                forroLevel.Name, forroLevel.ImageUrl, UrlOrThumbNails.URL);
+
+            var thumbNailsImageUrl = await UploadFileToS3(fileThumbNailsStream, forroLevel.ForroLevelId,
+                forroLevel.Name, forroLevel.ThumbNailsImageUrl, UrlOrThumbNails.ThumbNails);
+
+            //Update using actual S3 ObjectKey
+            forroLevel.ImageUrl = imageUrl;
+            forroLevel.ThumbNailsImageUrl = thumbNailsImageUrl;
+
+            var newForroLevel = await _repository.Update(forroLevel);
+            
             return newForroLevel;
         }
 
@@ -102,21 +112,59 @@ namespace Forro.Services
             //Run synchronously. Not ideal I know, but my goal is to be straightforward and learn AWS, so this is faster development 
             //TODO: This logic is seriously fragile, I would never approve it during a code-review lol
 
-            if(!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
+            if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
             {
                 _amazonS3.DeleteAsync(_bucketName, forroLevel.ImageUrl, null).Wait();
             }
+            if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailsImageUrl))
+            {
+                _amazonS3.DeleteAsync(_bucketName, forroLevel.ThumbNailsImageUrl, null).Wait();
+            }
         }
+        #endregion IForroLevelService implementation
 
-        private string GetNewObjectKey(ForroLevel forroLevel)
+        #region Private Methods
+
+        private async Task<string> UploadFileToS3(Stream fileStream, int forroLevelId, string forroLevelName, string imageUrl,
+            UrlOrThumbNails urlOrThumbNails)
         {
-            var result = Regex.Replace(forroLevel.Name.Trim(), "[^a-zA-Z0-9_.]+", "-", RegexOptions.Compiled);
-            result = forroLevel.ForroLevelId + "-" + result.ToLower();
-            result = _forroLevelFolder + result;
+            //If there is a file being uploaded
+            if (fileStream != null)
+            {
+                var fileExtension = Path.GetExtension(imageUrl);
 
-            //Add extension
-            result = result + Path.GetExtension(forroLevel.ImageUrl);
+                var objectKey = GetNewImageUrlObjectKey(forroLevelId, forroLevelName, urlOrThumbNails,
+                    fileExtension);
+
+                //var stream = new FileStream();
+                var request = new PutObjectRequest()
+                {
+                    Key = objectKey,
+                    BucketName = _bucketName,
+                    InputStream = fileStream
+                };
+
+                await _amazonS3.PutObjectAsync(request);
+                return objectKey;
+            }
+            return "";
+        }
+        private string GetNewImageUrlObjectKey(int forroLevelId, string forroLevelName, UrlOrThumbNails urlOrThumbNails, 
+            string fileExtension)
+        {
+            var result = Regex.Replace(forroLevelName.Trim(), "[^a-zA-Z0-9_.]+", "-", RegexOptions.Compiled);
+
+            result = forroLevelId + "-" + result.ToLower() + "-" + urlOrThumbNails.ToString().ToLower();
+            result = result + fileExtension;
+
+            result = _forroLevelFolder + result;
             return result;
         }
+
+        private enum UrlOrThumbNails
+        {
+            URL, ThumbNails
+        }
+        #endregion Private Methods
     }
 }

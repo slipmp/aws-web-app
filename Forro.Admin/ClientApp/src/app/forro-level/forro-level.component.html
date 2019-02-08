@@ -25,6 +25,7 @@
         <td>{{ forroLevel.forroLevelId }}</td>
         <td>{{ forroLevel.name }}</td>
         <td><img src="{{ forroLevel.imageUrl }}" alt="{{forroLevel.name}}" width="50" height="70" *ngIf="forroLevel.imageUrl" /></td>
+        <td><img src="{{ forroLevel.thumbNailsImageUrl }}" alt="{{forroLevel.name}}" width="50" height="70" *ngIf="forroLevel.thumbNailsImageUrl" /></td>
         <td>
           <button type="button" class="btn btn-default btn-sm" (click)="deleteSelectedForroLevel(forroLevel.forroLevelId)">
             <span class="glyphicon glyphicon-trash"></span>

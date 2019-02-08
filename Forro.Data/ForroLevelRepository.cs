@@ -15,6 +15,7 @@ namespace Forro.Data
         ForroLevel Get(int id);
         Task<IList<ForroLevel>> GetAll();
         Task<ForroLevel> Insert(ForroLevel forroLevel);
+        Task<ForroLevel> Update(ForroLevel forroLevel);
         void Delete(int id);
     }
 
@@ -71,6 +72,9 @@ namespace Forro.Data
             if (!string.IsNullOrWhiteSpace(forroLevel.ImageUrl))
                 attributes.Add(nameof(ForroLevel.ImageUrl), new AttributeValue() { S = forroLevel.ImageUrl });
 
+            if (!string.IsNullOrWhiteSpace(forroLevel.ThumbNailsImageUrl))
+                attributes.Add(nameof(ForroLevel.ThumbNailsImageUrl), new AttributeValue() { S = forroLevel.ThumbNailsImageUrl });
+
             var request = new PutItemRequest()
             {
                 TableName = ForroLevelTableName,
@@ -97,6 +101,20 @@ namespace Forro.Data
             var result = _client.DeleteItemAsync(request).Result;
         }
 
+        public async Task<ForroLevel> Update(ForroLevel forroLevel)
+        {
+            //The PutItem operation also can perform an update. For more information, see Putting an Item. 
+            ///For example, if you call PutItem to upload an item and the primary key exists, 
+            ///the PutItem operation replaces the entire item. Note that, 
+            ///if there are attributes in the existing item and those attributes are not specified in the input, 
+            ///the PutItem operation deletes those attributes. However, UpdateItem only updates the specified input attributes, 
+            ///any other existing attributes of that item remain unchanged.
+            
+            await Insert(forroLevel);
+
+            return forroLevel;
+        }
+
         #endregion Interfaces
 
         private ForroLevel MapForroLevel(Dictionary<string, AttributeValue> result)
@@ -109,6 +127,9 @@ namespace Forro.Data
 
             if (result.ContainsKey("ImageUrl"))
                 forroLevel.ImageUrl = result["ImageUrl"].S;
+
+            if (result.ContainsKey("ThumbNailsImageUrl"))
+                forroLevel.ThumbNailsImageUrl = result["ThumbNailsImageUrl"].S;
 
             return forroLevel;
         }
