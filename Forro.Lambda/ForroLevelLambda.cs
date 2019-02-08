@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
+using Forro.Services;
 
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -14,6 +15,7 @@ namespace Forro.Lambda
 {
     public class ForroLevelLambda
     {
+        private readonly IForroLevelService _forroLevelService;
         /// <summary>
         /// Default constructor. This constructor is used by Lambda to construct the instance. When invoked in a Lambda environment
         /// the AWS credentials will come from the IAM role associated with the function and the AWS region will be set to the
@@ -21,7 +23,7 @@ namespace Forro.Lambda
         /// </summary>
         public ForroLevelLambda()
         {
-
+            
         }
 
 

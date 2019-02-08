@@ -12,4 +12,8 @@
     <PackageReference Include="Amazon.Lambda.SQSEvents" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Forro.Services\Forro.Services.csproj" />
+  </ItemGroup>
+
 </Project>

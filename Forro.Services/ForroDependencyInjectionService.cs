@@ -2,18 +2,19 @@
 using Amazon.DynamoDBv2;
 using Amazon.S3;
 using Forro.Data;
+using Forro.Domain;
 using Forro.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Forro.Admin
+namespace Forro.Services
 {
-    public class DependencyInjectionRegister
+    public class ForroDependencyInjectionService
     {
         public IConfiguration Configuration { get; }
 
-        public DependencyInjectionRegister(IConfiguration configuration)
+        public ForroDependencyInjectionService(IConfiguration configuration)
         {
             Configuration = configuration;
         }

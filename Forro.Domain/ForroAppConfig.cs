@@ -1,4 +1,4 @@
-﻿namespace Forro.Admin
+﻿namespace Forro.Domain
 {
     public class ForroAppConfig
     {

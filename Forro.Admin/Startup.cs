@@ -23,8 +23,8 @@ namespace Forro.Admin
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var dependencyInjectionRegister = new DependencyInjectionRegister(Configuration);
-            dependencyInjectionRegister.DeclareDependencies(services);
+            var forroDependencyInjectionService = new ForroDependencyInjectionService(Configuration);
+            forroDependencyInjectionService.DeclareDependencies(services);
 
             var serviceProvider = services.BuildServiceProvider();
             var nLogConfig = new NLogConfig(serviceProvider);

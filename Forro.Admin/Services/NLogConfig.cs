@@ -4,6 +4,7 @@ using NLog.AWS.Logger;
 using NLog.Config;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Forro.Domain;
 
 namespace Forro.Admin
 {
