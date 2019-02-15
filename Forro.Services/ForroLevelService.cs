@@ -1,4 +1,5 @@
-﻿using Amazon.S3;
+﻿using Amazon;
+using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
@@ -39,24 +40,25 @@ namespace Forro.Services
         private readonly string _bucketFullUrl;
         private const string _forroLevelFolder = "level/";
         private readonly string _forroLevelSNSTopicArn;
+        private readonly RegionEndpoint _awsRegionEndpoint;
 
         private readonly IForroLevelMessage _forroLevelMessage;
 
         public ForroLevelService(IForroLevelRepository repository, 
             IAmazonS3 amazonS3,
             ILoggerManager loggerManager,
-            string bucketName, 
-            string regionString,
             IForroLevelMessage forroLevelMessage,
-            string forroLevelSNSTopicArn)
+            IForroAppConfig forroAppConfig)
         {
             _repository = repository;
             _amazonS3 = amazonS3;
             _loggerManager = loggerManager;
-            _bucketName = bucketName;
-            _bucketFullUrl = $"https://s3.{regionString}.amazonaws.com/{_bucketName}/";
+
+            _bucketName = forroAppConfig.AWSForroBucketName;
+            _bucketFullUrl = $"https://s3.{forroAppConfig.AWSRegionEndpoint}.amazonaws.com/{_bucketName}/";
             _forroLevelMessage = forroLevelMessage;
-            _forroLevelSNSTopicArn = forroLevelSNSTopicArn;
+            _forroLevelSNSTopicArn = forroAppConfig.ForroLevelSNSTopicArn;
+            _awsRegionEndpoint = RegionEndpoint.GetBySystemName(forroAppConfig.AWSRegionEndpoint);
         }
         #region IForroLevelService implementation
         public async Task<IList<ForroLevel>> GetAll()
@@ -175,7 +177,7 @@ namespace Forro.Services
 
         public async Task NotifySubscribersAboutNewForroLevel(ForroLevel forroLevel)
         {
-            var test = new AmazonSimpleNotificationServiceClient();
+            var clientSNS = new AmazonSimpleNotificationServiceClient(_awsRegionEndpoint);
 
             var message = $"The name of new Forró Level is {forroLevel.Name} and ID {forroLevel.ForroLevelId}";
 
@@ -188,7 +190,7 @@ namespace Forro.Services
 
             _loggerManager.LogInfo($"SNS Topic ARN is {_forroLevelSNSTopicArn}");
 
-            var result = await test.PublishAsync(publish);
+            var result = await clientSNS.PublishAsync(publish);
             if (IsSuccessStatusCode(result.HttpStatusCode))
                 _loggerManager.LogInfo($"Successfully sent a message to SNS Topic {_forroLevelSNSTopicArn}");
             else

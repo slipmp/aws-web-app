@@ -23,7 +23,8 @@ namespace Forro.Services
                 var result = new ForroAppConfig
                 {
                     AWSForroBucketName = _forroAppConfig.AWSForroBucketName,
-                    AWSRegionEndpoint = _forroAppConfig.AWSRegionEndpoint
+                    AWSRegionEndpoint = _forroAppConfig.AWSRegionEndpoint,
+                    ForroLevelSNSTopicArn = _forroAppConfig.ForroLevelSNSTopicArn
                 };
                 return result;
             });
@@ -55,8 +56,8 @@ namespace Forro.Services
                 var forroLevelMessage = x.GetRequiredService<IForroLevelMessage>();
 
                 var forroLevelService = new ForroLevelService(forroLevelRepository, s3Client, loggerManager,
-                    forroAppConfig.AWSForroBucketName, forroAppConfig.AWSRegionEndpoint, forroLevelMessage,
-                    forroAppConfig.ForroLevelSNSTopicArn);
+                    forroLevelMessage,
+                    forroAppConfig);
 
                 return forroLevelService;
             });
