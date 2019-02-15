@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
+using Forro.Domain;
 using Forro.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -15,7 +14,9 @@ namespace Forro.Lambda
 {
     public class ForroLevelLambda
     {
+        private readonly IServiceCollection _serviceCollection;
         private readonly IForroLevelService _forroLevelService;
+        
         /// <summary>
         /// Default constructor. This constructor is used by Lambda to construct the instance. When invoked in a Lambda environment
         /// the AWS credentials will come from the IAM role associated with the function and the AWS region will be set to the
@@ -23,7 +24,22 @@ namespace Forro.Lambda
         /// </summary>
         public ForroLevelLambda()
         {
-            
+            var forroAppConfig = new ForroAppConfig
+            {
+                AWSForroBucketName = Environment.GetEnvironmentVariable("AWSForroBucketName"),
+                AWSRegionEndpoint = Environment.GetEnvironmentVariable("AWSRegionEndpoint")
+            };
+
+            //Create Dependency Injection Container. Ideally I would use AutoFac, but this for now meets my expectations.
+            _serviceCollection = new ServiceCollection();
+
+            //_serviceCollection.
+            var forroDependencyInjectionService = new ForroDependencyInjectionService(forroAppConfig);
+            forroDependencyInjectionService.DeclareDependencies(_serviceCollection);
+
+            var serviceProvider = _serviceCollection.BuildServiceProvider();
+            _forroLevelService = serviceProvider.GetService<IForroLevelService>();
+
         }
 
 
@@ -36,7 +52,13 @@ namespace Forro.Lambda
         /// <returns></returns>
         public async Task FunctionHandler(SQSEvent evnt, ILambdaContext context)
         {
-            if (evnt == null)
+            ///One of the implications of using this feature is that you do not need to 
+            ///delete SQS messages in Lambda function because AWS will do it for you, but only when the 
+            ///Lambda completes successfully.
+            /// When your function successfully processes a batch, Lambda deletes its messages from the queue.
+            /// https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html
+
+            if (evnt == null || evnt.Records == null)
             {
                 throw new ArgumentNullException(nameof(evnt), "A SQS Event must be provided in order to Lambda be functional.");
             }
@@ -53,8 +75,9 @@ namespace Forro.Lambda
             context.Logger.LogLine($"Start processing Forró Level message and creating its ThumbNail!");
             context.Logger.LogLine($"Message Body: {message.Body}");
 
-            // TODO: Do interesting work based on the new message
-            await Task.CompletedTask;
+            var result = await _forroLevelService.GetAll();
+
+            context.Logger.LogLine($"Quantity of Forro Level in DynamoDB: { result.Count}");
         }
     }
 }

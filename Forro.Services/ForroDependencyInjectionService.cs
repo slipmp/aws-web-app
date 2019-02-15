@@ -3,38 +3,43 @@ using Amazon.DynamoDBv2;
 using Amazon.S3;
 using Forro.Data;
 using Forro.Domain;
-using Forro.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Forro.Services
 {
     public class ForroDependencyInjectionService
     {
-        public IConfiguration Configuration { get; }
-
-        public ForroDependencyInjectionService(IConfiguration configuration)
+        private readonly IForroAppConfig _forroAppConfig;
+        public ForroDependencyInjectionService(IForroAppConfig forroAppConfig)
         {
-            Configuration = configuration;
+            _forroAppConfig = forroAppConfig;
         }
 
         public void DeclareDependencies(IServiceCollection services)
         {
-            services.Configure<ForroAppConfig>(Configuration.GetSection("ForroAppConfig"));
+            services.AddSingleton<IForroAppConfig>(x =>
+            {
+                var result = new ForroAppConfig
+                {
+                    AWSForroBucketName = _forroAppConfig.AWSForroBucketName,
+                    AWSRegionEndpoint = _forroAppConfig.AWSRegionEndpoint
+                };
+                return result;
+            });
             
             services.AddScoped<ILoggerManager>(x =>
             {
-                var forroAppConfig = x.GetService<IOptions<ForroAppConfig>>();
-                var regionObject = RegionEndpoint.GetBySystemName(forroAppConfig.Value.AWSRegionEndpoint);
+                var forroAppConfig = x.GetService<IForroAppConfig>();
+                var regionObject = RegionEndpoint.GetBySystemName(forroAppConfig.AWSRegionEndpoint);
 
                 var cloudWatchLogger = new CloudWatchLogger(regionObject);
                 return cloudWatchLogger;
             });
             services.AddScoped<IForroLevelService>(x =>
             {
-                var forroAppConfig = x.GetService<IOptions<ForroAppConfig>>();
-                var regionObject = RegionEndpoint.GetBySystemName(forroAppConfig.Value.AWSRegionEndpoint);
+                var forroAppConfig = x.GetService<IForroAppConfig>();
+                var regionObject = RegionEndpoint.GetBySystemName(forroAppConfig.AWSRegionEndpoint);
 
                 var config = new AmazonDynamoDBConfig
                 {
@@ -50,15 +55,15 @@ namespace Forro.Services
                 var forroLevelMessage = x.GetRequiredService<IForroLevelMessage>();
 
                 var forroLevelService = new ForroLevelService(forroLevelRepository, s3Client, loggerManager,
-                    forroAppConfig.Value.AWSForroBucketName, forroAppConfig.Value.AWSRegionEndpoint, forroLevelMessage);
+                    forroAppConfig.AWSForroBucketName, forroAppConfig.AWSRegionEndpoint, forroLevelMessage);
 
                 return forroLevelService;
             });
 
             services.AddScoped<IForroLevelMessage>(x =>
             {
-                var forroAppConfig = x.GetService<IOptions<ForroAppConfig>>();
-                var regionObject = RegionEndpoint.GetBySystemName(forroAppConfig.Value.AWSRegionEndpoint);
+                var forroAppConfig = x.GetService<IForroAppConfig>();
+                var regionObject = RegionEndpoint.GetBySystemName(forroAppConfig.AWSRegionEndpoint);
 
                 //I will leave it hard-coded - maybe not optimum but suits my immediate needs.
                 var forroLevelQueueName = "Paulo-Forro-SQS";

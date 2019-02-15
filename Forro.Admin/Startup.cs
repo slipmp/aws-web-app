@@ -1,3 +1,4 @@
+using Forro.Domain;
 using Forro.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,7 +24,10 @@ namespace Forro.Admin
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var forroDependencyInjectionService = new ForroDependencyInjectionService(Configuration);
+            var forroAppConfig = new ForroAppConfig();
+            Configuration.GetSection("ForroAppConfig").Bind(forroAppConfig);
+            
+            var forroDependencyInjectionService = new ForroDependencyInjectionService(forroAppConfig);
             forroDependencyInjectionService.DeclareDependencies(services);
 
             var serviceProvider = services.BuildServiceProvider();
