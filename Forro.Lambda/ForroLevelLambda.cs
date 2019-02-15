@@ -5,7 +5,7 @@ using Amazon.Lambda.SQSEvents;
 using Forro.Domain;
 using Forro.Services;
 using Microsoft.Extensions.DependencyInjection;
-
+using Newtonsoft.Json;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -27,7 +27,8 @@ namespace Forro.Lambda
             var forroAppConfig = new ForroAppConfig
             {
                 AWSForroBucketName = Environment.GetEnvironmentVariable("AWSForroBucketName"),
-                AWSRegionEndpoint = Environment.GetEnvironmentVariable("AWSRegionEndpoint")
+                AWSRegionEndpoint = Environment.GetEnvironmentVariable("AWSRegionEndpoint"),
+                ForroLevelSNSTopicArn = Environment.GetEnvironmentVariable("ForroLevelSNSTopicArn")
             };
 
             //Create Dependency Injection Container. Ideally I would use AutoFac, but this for now meets my expectations.
@@ -78,6 +79,11 @@ namespace Forro.Lambda
             var result = await _forroLevelService.GetAll();
 
             context.Logger.LogLine($"Quantity of Forro Level in DynamoDB: { result.Count}");
+            var forroLevel = JsonConvert.DeserializeObject<ForroLevel>(message.Body);
+
+            context.Logger.LogLine("Starting sending message to SNS Topic.");
+            await _forroLevelService.NotifySubscribersAboutNewForroLevel(forroLevel);
+            context.Logger.LogLine("SNS Topic is sent.");
         }
     }
 }

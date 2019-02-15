@@ -1,10 +1,13 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using Forro.Data;
 using Forro.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -16,6 +19,13 @@ namespace Forro.Services
         Task<ForroLevel> Insert(ForroLevel forroLevel);
         Task<ForroLevel> Insert(ForroLevel forroLevel, Stream forroLogoStream);
         void Delete(int id);
+
+        /// <summary>
+        /// It is meant to be used asynchronously via a combination of SQS and Lambda
+        /// But since it is available via IForroLevelService, it will work anywhere :)
+        /// </summary>
+        /// <param name="forroLevel"></param>
+        Task NotifySubscribersAboutNewForroLevel(ForroLevel forroLevel);
     }
 
     public class ForroLevelService : IForroLevelService
@@ -28,6 +38,7 @@ namespace Forro.Services
         private readonly string _bucketName;
         private readonly string _bucketFullUrl;
         private const string _forroLevelFolder = "level/";
+        private readonly string _forroLevelSNSTopicArn;
 
         private readonly IForroLevelMessage _forroLevelMessage;
 
@@ -36,15 +47,16 @@ namespace Forro.Services
             ILoggerManager loggerManager,
             string bucketName, 
             string regionString,
-            IForroLevelMessage forroLevelMessage)
+            IForroLevelMessage forroLevelMessage,
+            string forroLevelSNSTopicArn)
         {
             _repository = repository;
             _amazonS3 = amazonS3;
             _loggerManager = loggerManager;
             _bucketName = bucketName;
             _bucketFullUrl = $"https://s3.{regionString}.amazonaws.com/{_bucketName}/";
-
             _forroLevelMessage = forroLevelMessage;
+            _forroLevelSNSTopicArn = forroLevelSNSTopicArn;
         }
         #region IForroLevelService implementation
         public async Task<IList<ForroLevel>> GetAll()
@@ -159,6 +171,35 @@ namespace Forro.Services
 
             result = _forroLevelFolder + result;
             return result;
+        }
+
+        public async Task NotifySubscribersAboutNewForroLevel(ForroLevel forroLevel)
+        {
+            var test = new AmazonSimpleNotificationServiceClient();
+
+            var message = $"The name of new Forró Level is {forroLevel.Name} and ID {forroLevel.ForroLevelId}";
+
+            var publish = new PublishRequest
+            {
+                TopicArn = _forroLevelSNSTopicArn,
+                Subject = "New Forró Level has been created",
+                Message = message
+            };
+
+            _loggerManager.LogInfo($"SNS Topic ARN is {_forroLevelSNSTopicArn}");
+
+            var result = await test.PublishAsync(publish);
+            if (IsSuccessStatusCode(result.HttpStatusCode))
+                _loggerManager.LogInfo($"Successfully sent a message to SNS Topic {_forroLevelSNSTopicArn}");
+            else
+                throw new Exception($"Error trying to publish on SNS topic " +
+                    $"{_forroLevelSNSTopicArn}. HttpStatus returned is {result.HttpStatusCode}");
+                    
+        }
+
+        private bool IsSuccessStatusCode(HttpStatusCode httpStatusCode)
+        {
+            return ((int)httpStatusCode >= 200) && ((int)httpStatusCode <= 299); 
         }
 
         private enum UrlOrThumbNail
