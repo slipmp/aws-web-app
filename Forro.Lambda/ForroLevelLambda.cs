@@ -61,7 +61,8 @@ namespace Forro.Lambda
 
             if (evnt == null || evnt.Records == null)
             {
-                throw new ArgumentNullException(nameof(evnt), "A SQS Event must be provided in order to Lambda be functional.");
+                context.Logger.LogLine("WARN: A SQS Event must be provided in order to Lambda be functional. Returning withough further processing.");
+                return;
             }
 
             context.Logger.LogLine("SQSEvent.ToString() => " + evnt.ToString());
