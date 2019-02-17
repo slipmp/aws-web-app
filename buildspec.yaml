@@ -4,6 +4,8 @@ phases:
     commands:
       - echo Forro solution Restore started on `date`
       - dotnet restore
+      - echo Installing Amazon.Lambda.Tools, so it is possible to build it
+      - dotnet tool install -g Amazon.Lambda.Tools
   build:
     commands:
       - echo  Forro solution Build started on `date`
