@@ -1,0 +1,9 @@
+version: 0.0
+Resources:
+  - Paulo-Lambda-ForroLevelHandler:
+      Type: AWS::Lambda::Function
+      Properties:
+        Name: "Paulo-Lambda-ForroLevelHandler"
+        Alias: "ForroLambda-Dev"
+        CurrentVersion: "1"
+        TargetVersion: "2"
