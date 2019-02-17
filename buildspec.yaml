@@ -13,3 +13,4 @@ phases:
 artifacts:
   files:
     - Forro.Lambda/bin/Release/netcoreapp2.1/Forro.Lambda.zip
+    - appspec.yaml
