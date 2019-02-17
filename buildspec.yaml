@@ -1,0 +1,13 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Forro solution Restore started on `date`
+      - dotnet restore
+  build:
+    commands:
+      - echo  Forro solution Build started on `date`
+      - dotnet lambda package -pl Forro.Lambda
+artifacts:
+  files:
+    - Forro.Lambda/bin/Release/netcoreapp2.1/Forro.Lambda.zip
