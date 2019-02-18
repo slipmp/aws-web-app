@@ -12,3 +12,8 @@ Resources:
       MemorySize: 512
       Timeout: 15
       Role: 'arn:aws:iam::118851432654:role/Paulo_Role'
+      Environment:
+       Variables:
+         AWSForroBucketName: paulo-bucket
+         AWSRegionEndpoint: us-east-2
+         ForroLevelSNSTopicArn: arn:aws:sns:us-east-2:118851432654:Paulo-SNS-Topic
