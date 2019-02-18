@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Forró Level SAM Template - Deploying Lambda using complete CICD pipeline
+Resources:
+  ForroLevelLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: Forro.Lambda::Forro.Lambda.ForroLevelLambda::FunctionHandler
+      Runtime: dotnetcore2.1
+      CodeUri: Forro.Lambda/bin/Release/netcoreapp2.1/Forro.Lambda.zip
+      Description: 'Forro Lambda Test'
+      MemorySize: 512
+      Timeout: 15
+      Role: 'arn:aws:iam::118851432654:role/Paulo_Role'

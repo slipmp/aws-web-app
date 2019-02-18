@@ -331,3 +331,6 @@ ASALocalRun/
 
 #Ignore mapping files - added manually by Marcos Soares
 *.js.map
+
+#Ignore Lambda SAM output template as it will change everytime a deployment takes place
+output-forrolambda-sam-template.yaml

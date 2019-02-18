@@ -10,7 +10,10 @@ phases:
     commands:
       - echo  Forro solution Build started on `date`
       - dotnet lambda package -pl Forro.Lambda
+      - echo Running CloudFormation Package command to generate the SAM output template
+      - aws cloudformation package --template-file forrolambda-sam-template.yaml --s3-bucket paulo-bucket-deploy --output-template-file output-forrolambda-sam-template.yaml
+
 artifacts:
   files:
-    - Forro.Lambda/bin/Release/netcoreapp2.1/Forro.Lambda.zip
-    - appspec.yaml
+    - forrolambda-sam-template.yaml
+    - output-forrolambda-sam-template.yaml
