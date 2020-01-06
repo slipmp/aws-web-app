@@ -18,5 +18,3 @@ Web site developed for the sole purpose to sharpen my software development skill
 	 - SNS
 	 - ElastiCache
 	 - Elastic Beanstalk
-
-This Project is helping my journey pursuing AWS Certified Developer - Associate: https://aws.amazon.com/certification/certified-developer-associate/
